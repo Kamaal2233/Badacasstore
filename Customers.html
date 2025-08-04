@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Badda-Cas - Customer Credit Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #3f37c9;
+      --accent: #4895ef;
+      --danger: #f72585;
+      --success: #4cc9f0;
+      --warning: #f8961e;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --text: #2b2d42;
+      --border: #dee2e6;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 25px;
+      border-radius: var(--radius);
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .date-display {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 25px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    
+    h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow);
+    }
+    
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-success {
+      background: var(--success);
+    }
+    
+    .btn-success:hover {
+      background: #3aa8d8;
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+    }
+    
+    .btn-danger:hover {
+      background: #e5177e;
+    }
+    
+    .btn-warning {
+      background: var(--warning);
+    }
+    
+    .btn-warning:hover {
+      background: #e68a19;
+    }
+    
+    .sales-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    
+    .summary-card span:first-child {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: var(--text);
+      opacity: 0.8;
+    }
+    
+    .summary-card span:last-child {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .summary-card.highlight {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+    
+    .summary-card.highlight span:first-child {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    th {
+      background: var(--primary);
+      color: white;
+      font-weight: 500;
+    }
+    
+    tr:nth-child(even) {
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    tr:hover {
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .btn-delete {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 5px;
+    }
+    
+    .btn-view {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 5px;
+    }
+    
+    .no-data {
+      text-align: center;
+      padding: 30px;
+      color: var(--text);
+      opacity: 0.7;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      color: var(--text);
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: var(--radius);
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    /* Search bar */
+    .search-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .search-bar input {
+      flex: 1;
+    }
+    
+    /* Customer details */
+    .customer-phone {
+      direction: ltr;
+      text-align: right;
+    }
+    
+    .debt-amount {
+      color: var(--danger);
+      font-weight: 600;
+    }
+    
+    /* Status badges */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .status-paid {
+      background-color: rgba(76, 201, 240, 0.1);
+      color: var(--success);
+    }
+    
+    .status-pending {
+      background-color: rgba(248, 149, 30, 0.1);
+      color: var(--warning);
+    }
+    
+    .status-overdue {
+      background-color: rgba(247, 37, 133, 0.1);
+      color: var(--danger);
+    }
+    
+    /* Customer view modal */
+    .customer-details {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    
+    .customer-details h3 {
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+    
+    .customer-details p {
+      margin-bottom: 10px;
+    }
+    
+    .customer-details strong {
+      display: inline-block;
+      width: 120px;
+    }
+    
+    .items-list {
+      width: 100%;
+      margin-top: 20px;
+    }
+    
+    .total-debt {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: right;
+    }
+    
+    /* Add credit form */
+    .credit-form {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(248, 249, 250, 0.8);
+      border-radius: var(--radius);
+    }
+    
+    /* Password modal */
+    .password-modal {
+      background: white;
+      padding: 30px;
+      border-radius: var(--radius);
+      width: 400px;
+      max-width: 90%;
+    }
+    
+  
+    /* Edit item modal */
+    .edit-item-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .sales-summary {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .search-bar {
+        flex-direction: column;
+      }
+      
+      .edit-item-form {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-users"></i> Badda-Cas Customers</h1>
+      <div>
+        <div class="date-display" id="currentDate"></div>
+        <a href="dashboard.html" class="btn" style="margin-top: 10px;"><i class="fas fa-home"></i> Home</a>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <section class="card customer-entry">
+        <h2><i class="fas fa-user-plus"></i> Add New Customer</h2>
+        <form id="customerForm">
+          <div class="form-group">
+            <label for="customerName">Full Name:</label>
+            <input type="text" id="customerName" required>
+          </div>
+          <div class="form-group">
+            <label for="customerPhone">Phone Number:</label>
+            <input type="tel" id="customerPhone" required>
+          </div>
+          <div class="form-group">
+            <label for="customerAddress">Address:</label>
+            <input type="text" id="customerAddress">
+          </div>
+          <div class="form-group">
+            <label for="creditLimit">Credit Limit (ETB):</label>
+            <input type="number" id="creditLimit" min="0" value="0">
+          </div>
+          <button type="submit" class="btn"><i class="fas fa-save"></i> Save Customer</button>
+        </form>
+        
+        <div class="credit-form">
+          <h3><i class="fas fa-cart-plus"></i> Add Credit Item</h3>
+          <form id="creditItemForm">
+            <div class="form-group">
+              <label for="creditCustomer">Customer:</label>
+              <select id="creditCustomer" required>
+                <option value="">Select Customer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="itemName">Item Name:</label>
+              <input type="text" id="itemName" required>
+            </div>
+            <div class="form-group">
+              <label for="itemQuantity">Quantity:</label>
+              <input type="number" id="itemQuantity" min="1" value="1" required>
+            </div>
+            <div class="form-group">
+              <label for="itemPrice">Unit Price (ETB):</label>
+              <input type="number" id="itemPrice" min="0.01" step="0.01" required>
+            </div>
+            <button type="submit" class="btn btn-warning"><i class="fas fa-credit-card"></i> Add as Credit</button>
+          </form>
+        </div>
+        
+        <div class="sales-summary" style="margin-top: 30px;">
+          <div class="summary-card">
+            <span>Total Customers</span>
+            <span id="totalCustomers">0</span>
+          </div>
+          <div class="summary-card">
+            <span>Active Credit</span>
+            <span id="activeCredit">0 ETB</span>
+          </div>
+          <div class="summary-card highlight">
+            <span>Total Debt</span>
+            <span id="totalDebt">0 ETB</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card customer-list">
+        <h2><i class="fas fa-list"></i> Customer Records</h2>
+        
+        <div class="search-bar">
+          <input type="text" id="searchCustomer" placeholder="Search by name, phone or debt...">
+          <button id="searchBtn" class="btn"><i class="fas fa-search"></i> Search</button>
+          <button id="viewDebtors" class="btn btn-warning"><i class="fas fa-exclamation-circle"></i> View Debtors</button>
+        </div>
+        
+        <table id="customersTable">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Debt</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="customersTableBody">
+            <tr>
+              <td colspan="6" class="no-data">Loading customers...</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <footer>
+      <p>Badda-Cas Store System &copy;
+      <p>Generated by <strong>Sovix</strong></p>
+      <span id="currentYear"></span></p>
+    </footer>
+  </div>
+
+  <!-- Customer Details Modal -->
+  <div id="customerModal" class="modal">
+    <div class="modal-content">
+      <div class="customer-details">
+        <h3><i class="fas fa-user"></i> <span id="modalCustomerName"></span></h3>
+        <p><strong>Phone:</strong> <span id="modalCustomerPhone"></span></p>
+        <p><strong>Address:</strong> <span id="modalCustomerAddress"></span></p>
+        <p><strong>Credit Limit:</strong> <span id="modalCreditLimit"></span> ETB</p>
+        <p><strong>Total Debt:</strong> <span id="modalTotalDebt" class="debt-amount"></span> ETB</p>
+        
+        <h3 style="margin-top: 20px;"><i class="fas fa-shopping-basket"></i> Items on Credit</h3>
+        <table class="items-list">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Total</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="customerItemsBody">
+            <tr>
+              <td colspan="7" class="no-data">No items on credit</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="total-debt">
+          <p>Total Outstanding: <span id="modalItemsTotal" class="debt-amount">0 ETB</span></p>
+        </div>
+      </div>
+      
+      <div class="modal-buttons">
+        <button id="closeCustomerModal" class="btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal with Password -->
+  <div id="deleteModal" class="modal">
+    <div class="password-modal">
+      <h3><i class="fas fa-trash-alt"></i> Confirm Deletion</h3>
+      <p>Are you sure you want to delete <span id="customerToDeleteName"></span>?</p>
+      <div class="form-group">
+        <label for="adminPassword">Enter Admin Password:</label>
+        <input type="password" id="adminPassword" placeholder="Password" required>
+      </div>
+      <div class="modal-buttons">
+        <button id="cancelDelete" class="btn">Cancel</button>
+        <button id="confirmDelete" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Item Modal -->
+  <div id="editItemModal" class="modal">
+    <div class="modal-content">
+      <h3><i class="fas fa-edit"></i> Edit Credit Item</h3>
+      <form id="editItemForm">
+        <input type="hidden" id="editItemId">
+        <input type="hidden" id="editItemCustomerId">
+        <div class="edit-item-form">
+          <div class="form-group">
+            <label for="editItemName">Item Name:</label>
+            <input type="text" id="editItemName" required>
+          </div>
+          <div class="form-group">
+            <label for="editItemQuantity">Quantity:</label>
+            <input type="number" id="editItemQuantity" min="1" required>
+          </div>
+          <div class="form-group">
+            <label for="editItemPrice">Unit Price (ETB):</label>
+            <input type="number" id="editItemPrice" min="0.01" step="0.01" required>
+          </div>
+        </div>
+        <div class="modal-buttons">
+          <button type="submit" class="btn">Save Changes</button>
+          <button type="button" id="cancelEditItem" class="btn btn-danger">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mark as Paid Modal -->
+  <div id="paidModal" class="modal">
+    <div class="modal-content">
+      <h3><i class="fas fa-check-circle"></i> Mark as Paid</h3>
+      <p>Are you sure you want to mark this item as paid?</p>
+      <div class="modal-buttons">
+        <button id="cancelPaid" class="btn">Cancel</button>
+        <button id="confirmPaid" class="btn btn-success">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      getDocs, 
+      deleteDoc, 
+      doc, 
+      query, 
+      where,
+      updateDoc,
+      writeBatch,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDiMoJVmwCHzBU6T5lgKg3dINDbMncG7i0",
+      authDomain: "khayrestore.firebaseapp.com",
+      projectId: "khayrestore",
+      storageBucket: "khayrestore.appspot.com",
+      messagingSenderId: "102681208506",
+      appId: "1:102681208506:web:0199e717c2362e85790483",
+      measurementId: "G-BPSV9N1V0W"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const customersRef = collection(db, "customers");
+    const creditItemsRef = collection(db, "creditItems");
+    const salesRef = collection(db, "sales");
+    const reportsRef = collection(db, "reports");
+
+    // DOM Elements
+    const form = document.getElementById("customerForm");
+    const creditItemForm = document.getElementById("creditItemForm");
+    const creditCustomerSelect = document.getElementById("creditCustomer");
+    const customersTableBody = document.getElementById("customersTableBody");
+    const searchInput = document.getElementById("searchCustomer");
+    const searchBtn = document.getElementById("searchBtn");
+    const viewDebtorsBtn = document.getElementById("viewDebtors");
+    const currentDateEl = document.getElementById("currentDate");
+    const currentYearEl = document.getElementById("currentYear");
+    const customerModal = document.getElementById("customerModal");
+    const closeCustomerModal = document.getElementById("closeCustomerModal");
+    const deleteModal = document.getElementById("deleteModal");
+    const customerToDeleteName = document.getElementById("customerToDeleteName");
+    const adminPassword = document.getElementById("adminPassword");
+    const cancelDelete = document.getElementById("cancelDelete");
+    const confirmDelete = document.getElementById("confirmDelete");
+    const editItemModal = document.getElementById("editItemModal");
+    const editItemForm = document.getElementById("editItemForm");
+    const cancelEditItem = document.getElementById("cancelEditItem");
+    const paidModal = document.getElementById("paidModal");
+    const cancelPaid = document.getElementById("cancelPaid");
+    const confirmPaid = document.getElementById("confirmPaid");
+    const totalCustomersEl = document.getElementById("totalCustomers");
+    const activeCreditEl = document.getElementById("activeCredit");
+    const totalDebtEl = document.getElementById("totalDebt");
+
+    // Global variables
+    let allCustomers = [];
+    let currentViewingCustomer = null;
+    let currentItemToEdit = null;
+    let currentItemToMarkAsPaid = null;
+    const ADMIN_PASSWORD = "delete"; // Change this in production!
+
+    // Set current date
+    const today = new Date();
+    currentDateEl.textContent = today.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    currentYearEl.textContent = today.getFullYear();
+
+    // Load customers with debt calculation
+    async function loadCustomers(searchTerm = "", showDebtorsOnly = false) {
+      try {
+        customersTableBody.innerHTML = "<tr><td colspan='6' class='no-data'>Loading customers...</td></tr>";
+        
+        let q;
+        if (searchTerm) {
+          q = query(
+            customersRef, 
+            where("name", ">=", searchTerm),
+            where("name", "<=", searchTerm + "\uf8ff")
+          );
+        } else {
+          q = query(customersRef);
+        }
+        
+        const querySnapshot = await getDocs(q);
+        allCustomers = [];
+        let totalDebt = 0;
+        let customersWithDebt = 0;
+        
+        if (querySnapshot.empty) {
+          customersTableBody.innerHTML = `
+            <tr>
+              <td colspan="6" class="no-data">No customers found</td>
+            </tr>
+          `;
+          totalCustomersEl.textContent = "0";
+          totalDebtEl.textContent = "0 ETB";
+          activeCreditEl.textContent = "0 ETB";
+        } else {
+          // Process each customer to calculate debt
+          const customerPromises = querySnapshot.docs.map(async (docSnap) => {
+            const customer = { id: docSnap.id, ...docSnap.data() };
+            
+            // Get credit items for this customer
+            const creditQuery = query(
+              creditItemsRef,
+              where("customerId", "==", docSnap.id),
+              where("paid", "==", false)
+            );
+            
+            const creditSnapshot = await getDocs(creditQuery);
+            let customerDebt = 0;
+            const creditItems = [];
+            
+            creditSnapshot.forEach(itemDoc => {
+              const item = itemDoc.data();
+              customerDebt += parseFloat(item.total);
+              creditItems.push({
+                id: itemDoc.id,
+                ...item
+              });
+            });
+            
+            customer.debt = customerDebt;
+            customer.creditItems = creditItems;
+            
+            if (customerDebt > 0) {
+              customersWithDebt++;
+              totalDebt += customerDebt;
+            }
+            
+            return customer;
+          });
+          
+          // Wait for all customer data to be processed
+          allCustomers = await Promise.all(customerPromises);
+          
+          // Update customer select dropdown
+          updateCustomerSelect(allCustomers);
+          
+          // Filter if only showing debtors
+          let displayedCustomers = showDebtorsOnly 
+            ? allCustomers.filter(c => c.debt > 0)
+            : allCustomers;
+          
+          // Update summary
+          totalCustomersEl.textContent = querySnapshot.size;
+          activeCreditEl.textContent = customersWithDebt;
+          totalDebtEl.textContent = totalDebt.toFixed(2) + " ETB";
+          
+          // Display customers
+          if (displayedCustomers.length === 0) {
+            customersTableBody.innerHTML = `
+              <tr>
+                <td colspan="6" class="no-data">No ${showDebtorsOnly ? 'debtors' : 'customers'} found</td>
+              </tr>
+            `;
+          } else {
+            customersTableBody.innerHTML = "";
+            displayedCustomers.forEach((customer, index) => {
+              const row = document.createElement("tr");
+              
+              // Determine status
+              let statusClass = "status-paid";
+              let statusText = "No Debt";
+              
+              if (customer.debt > 0) {
+                if (customer.creditLimit && customer.debt > customer.creditLimit) {
+                  statusClass = "status-overdue";
+                  statusText = "Overdue";
+                } else {
+                  statusClass = "status-pending";
+                  statusText = "Pending";
+                }
+              }
+              
+              row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${customer.name}</td>
+                <td class="customer-phone">${customer.phone || '-'}</td>
+                <td class="debt-amount">${customer.debt > 0 ? customer.debt.toFixed(2) + ' ETB' : '-'}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>
+                  <button class="btn-view" data-id="${customer.id}" onclick="viewCustomerDetails('${customer.id}')">
+                    <i class="fas fa-eye"></i> View
+                  </button>
+                  <button class="btn-delete" data-id="${customer.id}" onclick="deleteCustomer('${customer.id}', '${customer.name}')">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </td>
+              `;
+              customersTableBody.appendChild(row);
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error loading customers:", error);
+        customersTableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="no-data">Error loading customer data</td>
+          </tr>
+        `;
+      }
+    }
+
+    // Update customer select dropdown
+    function updateCustomerSelect(customers) {
+      creditCustomerSelect.innerHTML = '<option value="">Select Customer</option>';
+      customers.forEach(customer => {
+        const option = document.createElement("option");
+        option.value = customer.id;
+        option.textContent = `${customer.name} (${customer.phone || 'No phone'})`;
+        creditCustomerSelect.appendChild(option);
+      });
+    }
+
+    // View customer details
+    window.viewCustomerDetails = async function(customerId) {
+      const customer = allCustomers.find(c => c.id === customerId);
+      if (!customer) return;
+      
+      currentViewingCustomer = customer;
+      
+      // Populate modal
+      document.getElementById("modalCustomerName").textContent = customer.name;
+      document.getElementById("modalCustomerPhone").textContent = customer.phone || '-';
+      document.getElementById("modalCustomerAddress").textContent = customer.address || '-';
+      document.getElementById("modalCreditLimit").textContent = customer.creditLimit?.toFixed(2) || '0';
+      document.getElementById("modalTotalDebt").textContent = customer.debt?.toFixed(2) + ' ETB' || '0 ETB';
+      
+      // Populate items
+      const itemsBody = document.getElementById("customerItemsBody");
+      itemsBody.innerHTML = "";
+      
+      if (customer.creditItems?.length > 0) {
+        let itemsTotal = 0;
+        
+        customer.creditItems.forEach((item, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.quantity}</td>
+            <td>${item.price} ETB</td>
+            <td>${item.total} ETB</td>
+            <td>${new Date(item.timestamp?.seconds * 1000).toLocaleDateString()}</td>
+            <td><span class="status-badge ${item.paid ? 'status-paid' : 'status-pending'}">${item.paid ? 'Paid' : 'Pending'}</span></td>
+            <td>
+              ${!item.paid ? `
+                <button class="btn btn-sm" onclick="openEditItemModal('${item.id}', '${customer.id}', '${item.name}', ${item.quantity}, ${item.price})">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-sm btn-success" onclick="openMarkAsPaidModal('${item.id}', '${customer.id}')">
+                  <i class="fas fa-check"></i> Paid
+                </button>
+              ` : ''}
+            </td>
+          `;
+          itemsBody.appendChild(row);
+          if (!item.paid) {
+            itemsTotal += parseFloat(item.total);
+          }
+        });
+        
+        document.getElementById("modalItemsTotal").textContent = itemsTotal.toFixed(2) + " ETB";
+      } else {
+        itemsBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="no-data">No items on credit</td>
+          </tr>
+        `;
+        document.getElementById("modalItemsTotal").textContent = "0 ETB";
+      }
+      
+      // Show modal
+      customerModal.style.display = "flex";
+    };
+
+    // Open edit item modal
+    window.openEditItemModal = function(itemId, customerId, name, quantity, price) {
+      currentItemToEdit = { itemId, customerId };
+      document.getElementById("editItemId").value = itemId;
+      document.getElementById("editItemCustomerId").value = customerId;
+      document.getElementById("editItemName").value = name;
+      document.getElementById("editItemQuantity").value = quantity;
+      document.getElementById("editItemPrice").value = price;
+      editItemModal.style.display = "flex";
+    };
+
+    // Save edited item
+    editItemForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const itemId = document.getElementById("editItemId").value;
+      const customerId = document.getElementById("editItemCustomerId").value;
+      const name = document.getElementById("editItemName").value.trim();
+      const quantity = parseFloat(document.getElementById("editItemQuantity").value);
+      const price = parseFloat(document.getElementById("editItemPrice").value);
+      const total = quantity * price;
+      
+      try {
+        await updateDoc(doc(db, "creditItems", itemId), {
+          name,
+          quantity,
+          price,
+          total
+        });
+        
+        alert("Item updated successfully!");
+        editItemModal.style.display = "none";
+        loadCustomers();
+        if (currentViewingCustomer) {
+          viewCustomerDetails(currentViewingCustomer.id);
+        }
+      } catch (error) {
+        console.error("Error updating item:", error);
+        alert("Failed to update item");
+      }
+    });
+
+    // Open mark as paid modal
+    window.openMarkAsPaidModal = function(itemId, customerId) {
+      currentItemToMarkAsPaid = { itemId, customerId };
+      paidModal.style.display = "flex";
+    };
+
+    // Mark item as paid
+    confirmPaid.addEventListener("click", async () => {
+      if (!currentItemToMarkAsPaid) return;
+      
+      try {
+        // 1. Get the item data first
+        const itemRef = doc(db, "creditItems", currentItemToMarkAsPaid.itemId);
+        const itemSnap = await getDoc(itemRef);
+        const itemData = itemSnap.data();
+        
+        // 2. Add to sales collection
+        await addDoc(salesRef, {
+          customerId: currentItemToMarkAsPaid.customerId,
+          customerName: itemData.customerName,
+          name: itemData.name,
+          quantity: itemData.quantity,
+          price: itemData.price,
+          total: itemData.total,
+          timestamp: new Date(),
+          paymentMethod: "credit",
+          status: "paid"
+        });
+        
+        // 3. Update the credit item as paid
+        await updateDoc(itemRef, {
+          paid: true,
+          paidDate: new Date()
+        });
+        
+        // 4. Refresh data
+        loadCustomers();
+        paidModal.style.display = "none";
+        if (currentViewingCustomer) {
+          viewCustomerDetails(currentViewingCustomer.id);
+        }
+        
+        alert("Item marked as paid and moved to sales!");
+      } catch (error) {
+        console.error("Error marking item as paid:", error);
+        alert("Failed to process payment");
+      }
+    });
+
+    // Delete customer with password confirmation
+    window.deleteCustomer = function(customerId, customerName) {
+      customerToDeleteName.textContent = customerName;
+      document.getElementById("adminPassword").value = "";
+      window.customerToDelete = customerId;
+      deleteModal.style.display = "flex";
+    };
+
+    confirmDelete.addEventListener("click", async () => {
+      if (adminPassword.value !== ADMIN_PASSWORD) {
+        alert("Invalid admin password!");
+        return;
+      }
+
+      try {
+        // Delete customer
+        await deleteDoc(doc(db, "customers", window.customerToDelete));
+        
+        // Delete all credit items for this customer
+        const q = query(creditItemsRef, where("customerId", "==", window.customerToDelete));
+        const querySnapshot = await getDocs(q);
+        
+        const batch = writeBatch(db);
+        querySnapshot.forEach(doc => {
+          batch.delete(doc.ref);
+        });
+        await batch.commit();
+        
+        loadCustomers();
+        deleteModal.style.display = "none";
+        alert("Customer deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting customer:", error);
+        alert("Failed to delete customer");
+      }
+    });
+
+    // Add new customer
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById("customerName").value.trim();
+      const phone = document.getElementById("customerPhone").value.trim();
+      const address = document.getElementById("customerAddress").value.trim();
+      const creditLimit = parseFloat(document.getElementById("creditLimit").value) || 0;
+      
+      if (!name || !phone) {
+        alert("Please fill in required fields (Name and Phone)");
+        return;
+      }
+      
+      try {
+        await addDoc(customersRef, {
+          name,
+          phone,
+          address: address || null,
+          creditLimit,
+          createdAt: new Date()
+        });
+        
+        form.reset();
+        document.getElementById("customerName").focus();
+        loadCustomers();
+      } catch (error) {
+        console.error("Error adding customer:", error);
+        alert("Failed to add customer. Please try again.");
+      }
+    });
+
+    // Add credit item
+    creditItemForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const customerId = creditCustomerSelect.value;
+      const itemName = document.getElementById("itemName").value.trim();
+      const quantity = parseFloat(document.getElementById("itemQuantity").value);
+      const price = parseFloat(document.getElementById("itemPrice").value);
+      
+      if (!customerId || !itemName || isNaN(quantity) || isNaN(price)) {
+        alert("Please fill in all fields with valid values");
+        return;
+      }
+      
+      const total = quantity * price;
+      const customer = allCustomers.find(c => c.id === customerId);
+      
+      if (!customer) {
+        alert("Customer not found");
+        return;
+      }
+      
+      // Check credit limit
+      if (customer.creditLimit > 0 && (customer.debt + total) > customer.creditLimit) {
+        if (!confirm(`This will exceed customer's credit limit (${customer.creditLimit.toFixed(2)} ETB). Continue anyway?`)) {
+          return;
+        }
+      }
+      
+      try {
+        await addDoc(creditItemsRef, {
+          customerId,
+          customerName: customer.name,
+          name: itemName,
+          quantity,
+          price,
+          total,
+          paid: false,
+          timestamp: new Date()
+        });
+        
+        creditItemForm.reset();
+        document.getElementById("itemName").focus();
+        loadCustomers();
+      } catch (error) {
+        console.error("Error adding credit item:", error);
+        alert("Failed to add credit item. Please try again.");
+      }
+    });
+
+    // Search customers
+    searchBtn.addEventListener("click", () => {
+      const searchTerm = searchInput.value.trim();
+      loadCustomers(searchTerm);
+    });
+    
+    searchInput.addEventListener("keyup", (e) => {
+      if (e.key === "Enter") {
+        const searchTerm = searchInput.value.trim();
+        loadCustomers(searchTerm);
+      }
+    });
+
+    // View debtors only
+    viewDebtorsBtn.addEventListener("click", () => {
+      const isActive = viewDebtorsBtn.classList.contains("active");
+      
+      if (isActive) {
+        viewDebtorsBtn.classList.remove("active");
+        loadCustomers(searchInput.value.trim());
+      } else {
+        viewDebtorsBtn.classList.add("active");
+        loadCustomers(searchInput.value.trim(), true);
+      }
+    });
+
+    // Close modals
+    closeCustomerModal.addEventListener("click", () => {
+      customerModal.style.display = "none";
+    });
+
+    cancelDelete.addEventListener("click", () => {
+      deleteModal.style.display = "none";
+    });
+
+    cancelEditItem.addEventListener("click", () => {
+      editItemModal.style.display = "none";
+    });
+
+    cancelPaid.addEventListener("click", () => {
+      paidModal.style.display = "none";
+    });
+
+    // Initialize
+    loadCustomers();
+  </script>
+  
+  <!-- Firebase Auth Check -->
+<script type="module" src="auth-check.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Badda-Cas Store - Sales Reports</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4895ef;
+      --success: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --text: #2b2d42;
+      --border: #dee2e6;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .date-display {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 15px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+    }
+    
+    h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .date-range-selector {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      flex: 1;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow);
+    }
+    
+    .btn:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-report {
+      background: var(--success);
+    }
+    
+    .btn-report:hover {
+      background: #3aa8d8;
+    }
+    
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease;
+    }
+    
+    .summary-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .summary-card.highlight {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+    
+    .summary-card span:first-child {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+    
+    .summary-card span:last-child {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    th {
+      background: var(--primary);
+      color: white;
+      font-weight: 500;
+    }
+    
+    tr:nth-child(even) {
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    tr:hover {
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+    
+    .no-data {
+      text-align: center;
+      padding: 30px;
+      color: var(--text);
+      opacity: 0.7;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      color: var(--text);
+      font-size: 14px;
+      opacity: 0.8;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    
+    @media (max-width: 768px) {
+      .date-range-selector {
+        flex-direction: column;
+      }
+      
+      header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-chart-line"></i> Badda-Cas Sales Reports</h1>
+      <div class="date-display" id="currentDate"></div>
+    </header>
+
+    <section class="card">
+      <h2><i class="fas fa-filter"></i> Filter Reports</h2>
+      <div class="date-range-selector">
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" id="startDate">
+        </div>
+        <div class="form-group">
+          <label for="endDate">End Date</label>
+          <input type="date" id="endDate">
+        </div>
+      </div>
+      <button id="generateReport" class="btn btn-report"><i class="fas fa-search"></i> Generate Report</button>
+      <button id="exportPDF" class="btn" disabled><i class="fas fa-file-pdf"></i> Export to PDF</button>
+    </section>
+
+    <section class="card">
+      <h2><i class="fas fa-chart-pie"></i> Sales Summary</h2>
+      <div class="summary-cards">
+        <div class="summary-card">
+          <span>Total Items Sold</span>
+          <span id="totalItems">0</span>
+        </div>
+        <div class="summary-card">
+          <span>Total Quantity</span>
+          <span id="totalQuantity">0</span>
+        </div>
+        <div class="summary-card highlight">
+          <span>Total Sales Value</span>
+          <span id="totalValue">0 ETB</span>
+        </div>
+      </div>
+      
+      <h2><i class="fas fa-receipt"></i> Detailed Transactions</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="reportTableBody">
+          <tr>
+            <td colspan="5" class="no-data">Select a date range to view sales reports</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer>
+      <p>Badda-Cas Store Management System &copy; <span id="currentYear"></span> | All Rights Reserved</p>
+      <p>Generated by <strong>Sovix</strong></p>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDiMoJVmwCHzBU6T5lgKg3dINDbMncG7i0",
+      authDomain: "khayrestore.firebaseapp.com",
+      projectId: "khayrestore",
+      storageBucket: "khayrestore.firebasestorage.app",
+      messagingSenderId: "102681208506",
+      appId: "1:102681208506:web:0199e717c2362e85790483",
+      measurementId: "G-BPSV9N1V0W"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Check authentication state
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+      } else {
+        // Only initialize the app if user is authenticated
+        initializeApp();
+      }
+    });
+
+    // DOM Elements
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    const generateBtn = document.getElementById('generateReport');
+    const exportBtn = document.getElementById('exportPDF');
+    const reportBody = document.getElementById('reportTableBody');
+    const totalItemsSpan = document.getElementById('totalItems');
+    const totalQtySpan = document.getElementById('totalQuantity');
+    const totalValueSpan = document.getElementById('totalValue');
+    const currentDateSpan = document.getElementById('currentDate');
+    const currentYearSpan = document.getElementById('currentYear');
+
+    // Set current date
+    const today = new Date();
+    currentDateSpan.textContent = today.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    currentYearSpan.textContent = today.getFullYear();
+
+    // Set default date range (last 7 days)
+    const formatDate = date => {
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(today.getDate() - 7);
+    startDateInput.value = formatDate(oneWeekAgo);
+    endDateInput.value = formatDate(today);
+
+    let salesData = [];
+
+    // Fetch sales data from Firestore
+    async function fetchSales() {
+      try {
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = '<span class="loading"></span> Loading...';
+        reportBody.innerHTML = '<tr><td colspan="5" class="no-data">Loading sales data...</td></tr>';
+
+        const salesRef = collection(db, 'sales');
+        const snapshot = await getDocs(salesRef);
+        
+        salesData = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          // Handle both timestamp formats
+          const date = data.timestamp?.toDate?.() || new Date(data.timestamp);
+          salesData.push({
+            date,
+            itemName: data.name,
+            itemQuantity: parseFloat(data.quantity),
+            itemPrice: parseFloat(data.price)
+          });
+        });
+        
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<i class="fas fa-search"></i> Generate Report';
+        generateReport();
+      } catch (error) {
+        console.error("Error fetching sales data:", error);
+        reportBody.innerHTML = `<tr><td colspan="5" class="no-data">Error loading sales data: ${error.message}</td></tr>`;
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<i class="fas fa-search"></i> Generate Report';
+      }
+    }
+
+    // Generate report based on selected date range
+    function generateReport() {
+      const start = new Date(startDateInput.value);
+      const end = new Date(endDateInput.value);
+      end.setHours(23, 59, 59, 999);
+      
+      const filtered = salesData.filter(s => {
+        const saleDate = new Date(s.date);
+        return saleDate >= start && saleDate <= end;
+      });
+
+      reportBody.innerHTML = '';
+      
+      if (filtered.length === 0) {
+        reportBody.innerHTML = `<tr><td colspan="5" class="no-data">No sales found for selected date range</td></tr>`;
+        totalItemsSpan.textContent = '0';
+        totalQtySpan.textContent = '0';
+        totalValueSpan.textContent = '0 ETB';
+        exportBtn.disabled = true;
+        return;
+      }
+
+      let totalItems = filtered.length;
+      let totalQty = 0;
+      let totalVal = 0;
+
+      filtered.forEach(s => {
+        const total = s.itemQuantity * s.itemPrice;
+        totalQty += s.itemQuantity;
+        totalVal += total;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${new Date(s.date).toLocaleDateString()}</td>
+          <td>${s.itemName}</td>
+          <td>${s.itemQuantity.toFixed(2)}</td>
+          <td>${s.itemPrice.toFixed(2)} ETB</td>
+          <td>${total.toFixed(2)} ETB</td>
+        `;
+        reportBody.appendChild(row);
+      });
+
+      // Update summary cards
+      totalItemsSpan.textContent = totalItems;
+      totalQtySpan.textContent = totalQty.toFixed(2);
+      totalValueSpan.textContent = `${totalVal.toFixed(2)} ETB`;
+      exportBtn.disabled = false;
+    }
+
+    // Export to PDF with beautiful design
+    function exportToPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      // Add logo (replace with your actual logo URL)
+      const logoUrl = 'https://via.placeholder.com/150x50?text=Badda-Cas';
+      doc.addImage(logoUrl, 'JPEG', 75, 10, 60, 20);
+      
+      // Add title
+      doc.setFontSize(22);
+      doc.setTextColor(67, 97, 238);
+      doc.setFont("helvetica", "bold");
+      doc.text('Badda Cas Sales Report', 105, 40, { align: 'center' });
+      
+      // Add date range
+      doc.setFontSize(12);
+      doc.setTextColor(100, 100, 100);
+      doc.setFont("helvetica", "normal");
+      doc.text(
+        `From ${new Date(startDateInput.value).toLocaleDateString()} to ${new Date(endDateInput.value).toLocaleDateString()}`, 
+        105, 
+        50, 
+        { align: 'center' }
+      );
+      
+      // Add summary section
+      doc.setDrawColor(67, 97, 238);
+      doc.setLineWidth(0.5);
+      doc.line(15, 60, 195, 60);
+      
+      doc.setFontSize(14);
+      doc.setTextColor(67, 97, 238);
+      doc.setFont("helvetica", "bold");
+      doc.text('Sales Summary', 15, 70);
+      
+      const filtered = salesData.filter(s => {
+        const saleDate = new Date(s.date);
+        const start = new Date(startDateInput.value);
+        const end = new Date(endDateInput.value);
+        end.setHours(23, 59, 59, 999);
+        return saleDate >= start && saleDate <= end;
+      });
+      
+      const totalItems = filtered.length;
+      const totalQty = filtered.reduce((sum, s) => sum + s.itemQuantity, 0);
+      const totalVal = filtered.reduce((sum, s) => sum + (s.itemQuantity * s.itemPrice), 0);
+      
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Total Items Sold: ${totalItems}`, 15, 80);
+      doc.text(`Total Quantity: ${totalQty.toFixed(2)}`, 15, 90);
+      doc.text(`Total Sales Value: ${totalVal.toFixed(2)} ETB`, 15, 100);
+      
+      // Add transactions section
+      doc.setFontSize(14);
+      doc.setTextColor(67, 97, 238);
+      doc.setFont("helvetica", "bold");
+      doc.text('Detailed Transactions', 15, 115);
+      
+      // Prepare table data
+      const headers = [['Date', 'Item', 'Qty', 'Unit Price', 'Total']];
+      const rows = filtered.map(s => [
+        new Date(s.date).toLocaleDateString(),
+        s.itemName,
+        s.itemQuantity.toFixed(2),
+        `${s.itemPrice.toFixed(2)} ETB`,
+        `${(s.itemQuantity * s.itemPrice).toFixed(2)} ETB`
+      ]);
+      
+      // Add table with styling
+      doc.autoTable({
+        head: headers,
+        body: rows,
+        startY: 120,
+        theme: 'grid',
+        headStyles: {
+          fillColor: [67, 97, 238],
+          textColor: 255,
+          fontStyle: 'bold',
+          fontSize: 10
+        },
+        bodyStyles: {
+          fontSize: 9
+        },
+        alternateRowStyles: {
+          fillColor: [240, 240, 240]
+        },
+        styles: {
+          cellPadding: 4,
+          overflow: 'linebreak',
+          lineWidth: 0.1,
+          lineColor: [200, 200, 200]
+        },
+        margin: { top: 120 }
+      });
+      
+      // Add footer
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Generated on ${new Date().toLocaleString()}`, 105, doc.internal.pageSize.height - 10, { align: 'center' });
+      doc.text('Generated by Sovix', 105, doc.internal.pageSize.height - 5, { align: 'center' });
+      
+      // Save PDF with meaningful name
+      const fileName = `Sales_Report_${new Date().toISOString().slice(0, 10)}.pdf`;
+      doc.save(fileName);
+    }
+
+    // Event listeners
+    generateBtn.addEventListener('click', generateReport);
+    exportBtn.addEventListener('click', exportToPDF);
+    window.addEventListener('load', fetchSales);
+  </script>
+  <!-- Firebase Auth Check -->
+<script type="module" src="auth-check.js"></script>
+
+</body>
+</html>
