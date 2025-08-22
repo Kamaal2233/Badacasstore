@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khayre Store - Manage Items</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #3f37c9;
+      --accent: #4895ef;
+      --danger: #f72585;
+      --success: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --text: #2b2d42;
+      --border: #dee2e6;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 20px;
+      border-radius: var(--radius);
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 20px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    
+    h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    .btn {
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-save {
+      background: var(--success);
+    }
+    
+    .btn-save:hover {
+      background: #3aa8d8;
+      transform: translateY(-2px);
+    }
+    
+    .btn-clear {
+      background: var(--danger);
+    }
+    
+    .btn-clear:hover {
+      background: #e5177e;
+      transform: translateY(-2px);
+    }
+    
+    .btn-back {
+      background: var(--accent);
+    }
+    
+    .btn-back:hover {
+      background: #3d85d6;
+      transform: translateY(-2px);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    th {
+      background: var(--primary);
+      color: white;
+      font-weight: 500;
+    }
+    
+    tr:nth-child(even) {
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    tr:hover {
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+    
+    .action-btns {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn-edit, .btn-delete {
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .btn-edit {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .btn-delete {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .no-data {
+      text-align: center;
+      padding: 20px;
+      color: var(--text);
+      opacity: 0.7;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 15px;
+      color: var(--text);
+      font-size: 14px;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: var(--radius);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+    
+    .modal-btns {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-btns {
+        flex-direction: column;
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-box"></i> Manage Store Items</h1>
+      <a href="dashboard.html" class="btn btn-back"><i class="fas fa-arrow-left"></i> Back to Sales</a>
+    </header>
+
+    <div class="main-content">
+      <section class="card">
+        <h2><i class="fas fa-plus-circle"></i> Add/Edit Item</h2>
+        <form id="itemForm">
+          <input type="hidden" id="itemId">
+          <div class="form-group">
+            <label for="itemName">Item Name:</label>
+            <input type="text" id="itemName" required>
+          </div>
+          <div class="form-group">
+            <label for="itemCostPrice">Cost Price (ETB):</label>
+            <input type="number" id="itemCostPrice" min="0" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="itemsellingPrice">Selling Price (ETB):</label>
+            <input type="number" id="itemsellingPrice" min="0" step="0.01" required>
+          </div>
+          <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="submit" class="btn btn-save"><i class="fas fa-save"></i> Save</button>
+            <button type="button" id="clearBtn" class="btn btn-clear"><i class="fas fa-times"></i> Clear</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2><i class="fas fa-list"></i> Current Items</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Item Name</th>
+              <th>Cost Price</th>
+              <th>Selling Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="itemsTable">
+            <tr>
+              <td colspan="5" class="no-data">Loading items...</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <footer>
+      <p>Khayre Store System &copy; <span id="currentYear"></span></p>
+    </footer>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h3><i class="fas fa-exclamation-triangle"></i> Confirm Delete</h3>
+      <p>Are you sure you want to delete this item?</p>
+      <div class="modal-btns">
+        <button id="cancelDelete" class="btn btn-back">Cancel</button>
+        <button id="confirmDelete" class="btn btn-clear">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDiMoJVmwCHzBU6T5lgKg3dINDbMncG7i0",
+      authDomain: "khayrestore.firebaseapp.com",
+      projectId: "khayrestore",
+      storageBucket: "khayrestore.appspot.com",
+      messagingSenderId: "102681208506",
+      appId: "1:102681208506:web:0199e717c2362e85790483",
+      measurementId: "G-BPSV9N1V0W"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const itemsCollection = collection(db, "items");
+
+    // DOM elements
+    const itemForm = document.getElementById('itemForm');
+    const itemId = document.getElementById('itemId');
+    const itemName = document.getElementById('itemName');
+    const itemCostPrice = document.getElementById('itemCostPrice');
+    const itemsellingPrice = document.getElementById('itemsellingPrice');
+    const clearBtn = document.getElementById('clearBtn');
+    const itemsTable = document.getElementById('itemsTable');
+    const deleteModal = document.getElementById('deleteModal');
+    const cancelDelete = document.getElementById('cancelDelete');
+    const confirmDelete = document.getElementById('confirmDelete');
+    const currentYear = document.getElementById('currentYear');
+
+    // Set current year in footer
+    currentYear.textContent = new Date().getFullYear();
+
+    // Item to be deleted
+    let itemToDelete = null;
+
+    // Improved function to sanitize price values
+    function sanitizePrice(price) {
+      if (typeof price === 'string') {
+        // Remove any non-numeric characters except decimal point
+        const cleaned = price.replace(/[^\d.]/g, '');
+        return parseFloat(cleaned) || 0;
+      }
+      return price || 0;
+    }
+
+    // Load all items with better error handling
+    async function loadItems() {
+      try {
+        itemsTable.innerHTML = '<tr><td colspan="5" class="no-data">Loading items...</td></tr>';
+        
+        const querySnapshot = await getDocs(itemsCollection);
+        
+        if (querySnapshot.empty) {
+          itemsTable.innerHTML = '<tr><td colspan="5" class="no-data">No items available</td></tr>';
+          return;
+        }
+
+        let count = 0;
+        itemsTable.innerHTML = '';
+        
+        querySnapshot.forEach((doc) => {
+          count++;
+          const item = doc.data();
+          
+          // Sanitize price values
+          const costPrice = sanitizePrice(item.costPrice);
+          const sellingPrice = sanitizePrice(item.sellingPrice);
+          
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${count}</td>
+            <td>${item.name || 'N/A'}</td>
+            <td>${costPrice.toFixed(2)} ETB</td>
+            <td>${sellingPrice.toFixed(2)} ETB</td>
+            <td>
+              <div class="action-btns">
+                <button class="btn-edit" data-id="${doc.id}" data-name="${item.name}" 
+                        data-cost="${costPrice}" data-selling="${sellingPrice}">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn-delete" data-id="${doc.id}">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </div>
+            </td>
+          `;
+          itemsTable.appendChild(row);
+        });
+
+        // Add event listeners to edit buttons
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = e.target.closest('.btn-edit').dataset.id;
+            const name = e.target.closest('.btn-edit').dataset.name;
+            const cost = e.target.closest('.btn-edit').dataset.cost;
+            const selling = e.target.closest('.btn-edit').dataset.selling;
+            
+            itemId.value = id;
+            itemName.value = name;
+            itemCostPrice.value = cost;
+            itemsellingPrice.value = selling;
+            itemName.focus();
+          });
+        });
+
+        // Add event listeners to delete buttons
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            itemToDelete = e.target.closest('.btn-delete').dataset.id;
+            deleteModal.style.display = 'flex';
+          });
+        });
+
+      } catch (error) {
+        console.error("Error loading items: ", error);
+        itemsTable.innerHTML = '<tr><td colspan="5" class="no-data">Error loading items. Please try again.</td></tr>';
+      }
+    }
+
+    // Save item (add or update) with validation
+    itemForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = itemName.value.trim();
+      const costPrice = parseFloat(itemCostPrice.value);
+      const sellingPrice = parseFloat(itemsellingPrice.value);
+      
+      // Validation
+      if (!name) {
+        alert('Please enter item name');
+        return;
+      }
+      
+      if (isNaN(costPrice) || costPrice < 0) {
+        alert('Please enter a valid cost price');
+        return;
+      }
+      
+      if (isNaN(sellingPrice) || sellingPrice < 0) {
+        alert('Please enter a valid selling price');
+        return;
+      }
+      
+      try {
+        if (itemId.value) {
+          // Update existing item
+          await updateDoc(doc(db, "items", itemId.value), {
+            name: name,
+            costPrice: costPrice,
+            sellingPrice: sellingPrice
+          });
+        } else {
+          // Add new item
+          await addDoc(itemsCollection, {
+            name: name,
+            costPrice: costPrice,
+            sellingPrice: sellingPrice
+          });
+        }
+        
+        resetForm();
+        await loadItems();
+      } catch (error) {
+        console.error("Error saving item: ", error);
+        alert("Failed to save item. Please try again.");
+      }
+    });
+
+    // Clear form
+    clearBtn.addEventListener('click', resetForm);
+
+    function resetForm() {
+      itemForm.reset();
+      itemId.value = '';
+      itemName.focus();
+    }
+
+    // Delete item confirmation
+    cancelDelete.addEventListener('click', () => {
+      deleteModal.style.display = 'none';
+      itemToDelete = null;
+    });
+
+    confirmDelete.addEventListener('click', async () => {
+      if (itemToDelete) {
+        try {
+          await deleteDoc(doc(db, "items", itemToDelete));
+          await loadItems();
+          deleteModal.style.display = 'none';
+          itemToDelete = null;
+        } catch (error) {
+          console.error("Error deleting item: ", error);
+          alert("Failed to delete item. Please try again.");
+        }
+      }
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === deleteModal) {
+        deleteModal.style.display = 'none';
+        itemToDelete = null;
+      }
+    });
+
+    // Load items when page loads
+    loadItems();
+  </script>
+</body>
+</html>
