@@ -1,0 +1,889 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+  <title>Khayre Store</title>  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>  
+  <style>  
+    :root {  
+      --primary: #4361ee;  
+      --primary-dark: #3a56d4;  
+      --secondary: #3f37c9;  
+      --accent: #4895ef;  
+      --danger: #f72585;  
+      --success: #4cc9f0;  
+      --profit: #2ecc71;  
+      --loss: #e74c3c;  
+      --light: #f8f9fa;  
+      --dark: #212529;  
+      --text: #2b2d42;  
+      --border: #dee2e6;  
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  
+      --radius: 12px;  
+    }  
+    * {  
+      margin: 0;  
+      padding: 0;  
+      box-sizing: border-box;  
+    }  
+    
+    body {  
+      font-family: 'Poppins', sans-serif;  
+      background-color: #f5f7fa;  
+      color: var(--text);  
+      line-height: 1.6;  
+    }  
+    
+    .container {  
+      max-width: 1200px;  
+      margin: 0 auto;  
+      padding: 20px;  
+    }  
+    
+    header {  
+      background: linear-gradient(135deg, var(--primary), var(--secondary));  
+      color: white;  
+      padding: 25px;  
+      border-radius: var(--radius);  
+      margin-bottom: 30px;  
+      box-shadow: var(--shadow);  
+      display: flex;  
+      justify-content: space-between;  
+      align-items: center;  
+    }  
+    
+    header h1 {  
+      font-size: 28px;  
+      font-weight: 600;  
+      display: flex;  
+      align-items: center;  
+      gap: 12px;  
+    }  
+    
+    .date-display {  
+      background: rgba(255, 255, 255, 0.2);  
+      padding: 8px 16px;  
+      border-radius: 50px;  
+      font-size: 14px;  
+      font-weight: 500;  
+    }  
+    
+    .main-content {  
+      display: grid;  
+      grid-template-columns: 1fr 2fr;  
+      gap: 25px;  
+    }  
+    
+    .card {  
+      background: white;  
+      border-radius: var(--radius);  
+      padding: 25px;  
+      box-shadow: var(--shadow);  
+    }  
+    
+    h2 {  
+      font-size: 22px;  
+      margin-bottom: 20px;  
+      color: var(--primary);  
+      display: flex;  
+      align-items: center;  
+      gap: 12px;  
+    }  
+    
+    .form-group {  
+      margin-bottom: 20px;  
+    }  
+    
+    label {  
+      display: block;  
+      margin-bottom: 8px;  
+      font-weight: 500;  
+      color: var(--text);  
+    }  
+    
+    input, select {  
+      width: 100%;  
+      padding: 12px 16px;  
+      border: 1px solid var(--border);  
+      border-radius: 8px;  
+      font-size: 16px;  
+      transition: all 0.3s ease;  
+    }  
+    
+    input:focus, select:focus {  
+      outline: none;  
+      border-color: var(--accent);  
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);  
+    }  
+    
+    .display-group {  
+      background-color: #f8f9fa;  
+      padding: 12px 16px;  
+      border-radius: 8px;  
+      border: 1px solid var(--border);  
+      font-size: 16px;  
+    }  
+    
+    .btn {  
+      background: var(--primary);  
+      color: white;  
+      border: none;  
+      padding: 12px 24px;  
+      border-radius: 8px;  
+      cursor: pointer;  
+      font-size: 16px;  
+      font-weight: 500;  
+      transition: all 0.3s ease;  
+      display: inline-flex;  
+      align-items: center;  
+      gap: 8px;  
+      box-shadow: var(--shadow);  
+      text-decoration: none;  
+    }  
+    
+    .btn:hover {  
+      background: var(--primary-dark);  
+      transform: translateY(-2px);  
+    }  
+    
+    .btn:active {  
+      transform: translateY(0);  
+    }  
+    
+    .btn-report {  
+      background: var(--success);  
+    }  
+    
+    .btn-report:hover {  
+      background: #3aa8d8;  
+    }  
+    
+    .btn-clear {  
+      background: var(--danger);  
+    }  
+    
+    .btn-clear:hover {  
+      background: #e5177e;  
+    }  
+    
+    .btn-all-reports {  
+      background: var(--accent);  
+    }  
+    
+    .btn-all-reports:hover {  
+      background: #3d85d6;  
+    }  
+    
+    .btn-logout {  
+      background: var(--dark);  
+    }  
+    
+    .btn-logout:hover {  
+      background: #343a40;  
+    }  
+    
+    .sales-summary {  
+      display: grid;  
+      grid-template-columns: repeat(4, 1fr);  
+      gap: 15px;  
+      margin-bottom: 25px;  
+    }  
+    
+    .summary-card {  
+      background: white;  
+      border-radius: 8px;  
+      padding: 15px;  
+      text-align: center;  
+      box-shadow: var(--shadow);  
+    }  
+    
+    .summary-card span:first-child {  
+      display: block;  
+      font-size: 14px;  
+      margin-bottom: 8px;  
+      color: var(--text);  
+      opacity: 0.8;  
+    }  
+    
+    .summary-card span:last-child {  
+      font-size: 20px;  
+      font-weight: 600;  
+    }  
+    
+    .summary-card.highlight {  
+      background: linear-gradient(135deg, var(--primary), var(--secondary));  
+      color: white;  
+    }  
+    
+    .summary-card.highlight span:first-child {  
+      color: rgba(255, 255, 255, 0.9);  
+    }  
+    
+    .summary-card.profit {  
+      background: linear-gradient(135deg, var(--profit), #27ae60);  
+      color: white;  
+    }  
+    
+    .summary-card.profit span:first-child {  
+      color: rgba(255, 255, 255, 0.9);  
+    }  
+    
+    .summary-card.loss {  
+      background: linear-gradient(135deg, var(--loss), #c0392b);  
+      color: white;  
+    }  
+    
+    .summary-card.loss span:first-child {  
+      color: rgba(255, 255, 255, 0.9);  
+    }  
+    
+    table {  
+      width: 100%;  
+      border-collapse: collapse;  
+      background: white;  
+      border-radius: var(--radius);  
+      overflow: hidden;  
+      box-shadow: var(--shadow);  
+    }  
+    
+    th, td {  
+      padding: 15px;  
+      text-align: left;  
+      border-bottom: 1px solid var(--border);  
+    }  
+    
+    th {  
+      background: var(--primary);  
+      color: white;  
+      font-weight: 500;  
+    }  
+    
+    tr:nth-child(even) {  
+      background-color: rgba(67, 97, 238, 0.05);  
+    }  
+    
+    tr:hover {  
+      background-color: rgba(67, 97, 238, 0.1);  
+    }  
+    
+    .profit-text {  
+      color: var(--profit);  
+      font-weight: 600;  
+    }  
+    
+    .loss-text {  
+      color: var(--loss);  
+      font-weight: 600;  
+    }  
+    
+    .action-buttons {  
+      display: flex;  
+      gap: 15px;  
+      margin-top: 20px;  
+    }  
+    
+    .btn-delete {  
+      background: none;  
+      border: none;  
+      color: var(--danger);  
+      cursor: pointer;  
+      font-size: 16px;  
+      padding: 5px;  
+    }  
+    
+    .no-data {  
+      text-align: center;  
+      padding: 30px;  
+      color: var(--text);  
+      opacity: 0.7;  
+    }  
+    
+    footer {  
+      text-align: center;  
+      margin-top: 40px;  
+      padding: 20px;  
+      color: var(--text);  
+      font-size: 14px;  
+      opacity: 0.8;  
+    }  
+    
+    /* Modal Styles */  
+    .modal {  
+      display: none;  
+      position: fixed;  
+      top: 0;  
+      left: 0;  
+      width: 100%;  
+      height: 100%;  
+      background: rgba(0, 0, 0, 0.5);  
+      z-index: 1000;  
+      justify-content: center;  
+      align-items: center;  
+    }  
+    
+    .modal-content {  
+      background: white;  
+      padding: 30px;  
+      border-radius: var(--radius);  
+      max-width: 500px;  
+      width: 90%;  
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);  
+      text-align: center;  
+    }  
+    
+    .modal-buttons {  
+      display: flex;  
+      justify-content: center;  
+      gap: 15px;  
+      margin-top: 25px;  
+    }  
+    
+    @media (max-width: 992px) {  
+      .sales-summary {  
+        grid-template-columns: repeat(2, 1fr);  
+      }  
+    }  
+    
+    @media (max-width: 768px) {  
+      .main-content {  
+        grid-template-columns: 1fr;  
+      }  
+        
+      .sales-summary {  
+        grid-template-columns: 1fr;  
+      }  
+        
+      .action-buttons {  
+        flex-direction: column;  
+      }  
+    }  
+  </style>  
+</head>  
+<body>  
+  <div class="container">  
+    <header>  
+      <h1><i class="fas fa-store"></i> Khayre Store</h1>  
+      <div>  
+        <div class="date-display" id="currentDate"></div>  
+        <button id="logoutBtn" class="btn btn-logout" style="margin-top: 10px;"><i class="fas fa-sign-out-alt"></i> Logout</button>  
+      </div>  
+    </header>  
+
+    <div class="main-content">  
+      <section class="card sales-entry">  
+        <h2><i class="fas fa-cart-plus"></i> Add New Sale</h2>  
+        <form id="salesForm">  
+          <div class="form-group">  
+            <label for="itemSelect">Select Item:</label>  
+            <select id="itemSelect" required>  
+              <option value="">Select an item</option>  
+              <!-- Options will be populated from JavaScript -->  
+            </select>  
+          </div>  
+          <div class="form-group">  
+            <label>Item Name:</label>  
+            <div class="display-group" id="displayItemName">-</div>  
+          </div>  
+          <div class="form-group">  
+            <label>Cost Price (ETB):</label>  
+            <div class="display-group" id="displayCostPrice">-</div>  
+          </div>  
+          <div class="form-group">  
+            <label>Selling Price (ETB):</label>  
+            <div class="display-group" id="displaySellingPrice">-</div>  
+          </div>  
+          <div class="form-group">  
+            <label for="itemQuantity">Quantity:</label>  
+            <input type="number" id="itemQuantity" min="0.01" step="0.01" required />  
+          </div>  
+          <div class="form-group">  
+            <label for="itemPrice">Selling Price (ETB):</label>  
+            <input type="number" id="itemPrice" min="0.01" step="0.01" required />  
+          </div>  
+          <button type="submit" class="btn"><i class="fas fa-plus-circle"></i> Add Sale</button>  
+          <br>
+          <br>
+
+          <a href="AddNewItem.html" class="btn"><i class="fas fa-plus-circle"></i> Add New Item</a>  
+        </form>  
+      </section>  
+
+      <section class="card sales-list">  
+        <h2><i class="fas fa-list"></i> Today's Sales</h2>  
+        <div class="sales-summary">  
+          <div class="summary-card">  
+            <span>Total Items</span>  
+            <span id="totalItems">0</span>  
+          </div>  
+          <div class="summary-card">  
+            <span>Total Quantity</span>  
+            <span id="totalQuantity">0</span>  
+          </div>  
+          <div class="summary-card highlight">  
+            <span>Total Sales</span>  
+            <span id="totalValue">0 ETB</span>  
+          </div>  
+          <div class="summary-card" id="profitCard">  
+            <span>Total Profit</span>  
+            <span id="totalProfit">0 ETB</span>  
+          </div>  
+        </div>  
+        <table id="salesTable">  
+          <thead>  
+            <tr>  
+              <th>No.</th>  
+              <th>Item Name</th>  
+              <th>Qty</th>  
+              <th>Cost Price</th>  
+              <th>Sell Price</th>  
+              <th>Total</th>  
+              <th>Profit</th>  
+              <th>Action</th>  
+            </tr>  
+          </thead>  
+          <tbody id="salesTableBody">  
+            <tr>  
+              <td colspan="8" class="no-data">No sales recorded today</td>  
+            </tr>  
+          </tbody>  
+        </table>  
+        <div class="action-buttons">  
+          <button id="generateReport" class="btn btn-report"><i class="fas fa-file-pdf"></i> Generate Daily Report</button>  
+          <a href="customers.html" class="btn btn-all-reports"><i class="fas fa-users"></i> Customers</a>  
+          <button id="clearSales" class="btn btn-clear"><i class="fas fa-trash-alt"></i> Clear Today's Data</button>  
+          <a href="all reports.html" class="btn btn-all-reports"><i class="fas fa-chart-bar"></i> All Reports</a>  
+        </div>  
+      </section>  
+    </div>  
+
+    <footer>  
+      <p>Khayre Store System &copy;  
+      <p>Generated by <strong>Sovix</strong></p>  
+      <span id="currentYear"></span></p>  
+    </footer>  
+  </div>  
+
+  <!-- Confirmation Modal -->  
+  <div id="confirmModal" class="modal">  
+    <div class="modal-content">  
+      <h3><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h3>  
+      <p>Are you sure you want to clear all of today's sales data? This action cannot be undone.</p>  
+      <div class="modal-buttons">  
+        <button id="confirmCancel" class="btn">Cancel</button>  
+        <button id="confirmDelete" class="btn btn-clear">Delete All</button>  
+      </div>  
+    </div>  
+  </div>  
+
+  <!-- Firebase & Script -->  
+  <script type="module">  
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";  
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";  
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";  
+
+    const firebaseConfig = {  
+      apiKey: "AIzaSyDiMoJVmwCHzBU6T5lgKg3dINDbMncG7i0",  
+      authDomain: "khayrestore.firebaseapp.com",  
+      projectId: "khayrestore",  
+      storageBucket: "khayrestore.appspot.com",  
+      messagingSenderId: "102681208506",  
+      appId: "1:102681208506:web:0199e717c2362e85790483",  
+      measurementId: "G-BPSV9N1V0W"  
+    };  
+
+    const app = initializeApp(firebaseConfig);  
+    const db = getFirestore(app);  
+    const auth = getAuth(app);  
+    const salesRef = collection(db, "sales");  
+    const itemsRef = collection(db, "items");  
+
+    // DOM Elements  
+    const form = document.getElementById("salesForm");  
+    const itemSelect = document.getElementById("itemSelect");  
+    const displayItemName = document.getElementById("displayItemName");  
+    const displayCostPrice = document.getElementById("displayCostPrice");  
+    const displaySellingPrice = document.getElementById("displaySellingPrice");  
+    const itemQuantityInput = document.getElementById("itemQuantity");  
+    const itemPriceInput = document.getElementById("itemPrice");  
+    const salesTableBody = document.getElementById("salesTableBody");  
+    const totalItemsEl = document.getElementById("totalItems");  
+    const totalQuantityEl = document.getElementById("totalQuantity");  
+    const totalValueEl = document.getElementById("totalValue");  
+    const totalProfitEl = document.getElementById("totalProfit");  
+    const profitCard = document.getElementById("profitCard");  
+    const currentDateEl = document.getElementById("currentDate");  
+    const currentYearEl = document.getElementById("currentYear");  
+    const generateReportBtn = document.getElementById("generateReport");  
+    const clearSalesBtn = document.getElementById("clearSales");  
+    const confirmModal = document.getElementById("confirmModal");  
+    const confirmCancel = document.getElementById("confirmCancel");  
+    const confirmDelete = document.getElementById("confirmDelete");  
+    const logoutBtn = document.getElementById("logoutBtn");  
+
+    // Set current date  
+    const today = new Date();  
+    const todayStart = new Date(today);  
+    todayStart.setHours(0, 0, 0, 0);  
+    const todayEnd = new Date(today);  
+    todayEnd.setHours(23, 59, 59, 999);  
+      
+    currentDateEl.textContent = today.toLocaleDateString('en-US', {   
+      weekday: 'long',   
+      year: 'numeric',   
+      month: 'long',   
+      day: 'numeric'   
+    });  
+    currentYearEl.textContent = today.getFullYear();  
+
+    // Function to clean price values
+    function cleanPrice(price) {
+      if (typeof price === 'string') {
+        // Remove any non-numeric characters except decimal point
+        const cleaned = price.replace(/[^\d.]/g, '');
+        return parseFloat(cleaned) || 0;
+      }
+      return price || 0;
+    }
+
+    // Load items from database  
+    async function loadItems() {  
+      try {  
+        const querySnapshot = await getDocs(itemsRef);  
+        itemSelect.innerHTML = '<option value="">Select an item</option>';  
+          
+        querySnapshot.forEach((doc) => {  
+          const item = doc.data();  
+          const option = document.createElement("option");  
+          option.value = doc.id;  
+          option.textContent = item.name;  
+          option.dataset.name = item.name;  
+          option.dataset.costPrice = cleanPrice(item.costPrice);
+          
+          // Clean and handle selling price
+          const sellingPrice = cleanPrice(item.sellingPrice);
+          option.dataset.sellingPrice = sellingPrice > 0 ? sellingPrice : "-";  
+          
+          itemSelect.appendChild(option);  
+        });  
+          
+        itemSelect.addEventListener("change", (e) => {  
+          const selectedOption = itemSelect.options[itemSelect.selectedIndex];  
+          if (selectedOption.value) {  
+            displayItemName.textContent = selectedOption.dataset.name;  
+            displayCostPrice.textContent = selectedOption.dataset.costPrice + " ETB";  
+            
+            // Display SellingPrice
+            const sellingPrice = selectedOption.dataset.sellingPrice;  
+            displaySellingPrice.textContent = sellingPrice === "-" ? "-" : sellingPrice + " ETB";  
+            
+            // Auto-fill selling price if available
+            itemPriceInput.value = sellingPrice === "-" ? "" : sellingPrice;  
+            itemQuantityInput.focus();  
+          } else {  
+            displayItemName.textContent = "-";  
+            displayCostPrice.textContent = "-";  
+            displaySellingPrice.textContent = "-";  
+            itemPriceInput.value = "";  
+          }  
+        });  
+          
+      } catch (error) {  
+        console.error("Error loading items:", error);  
+        alert("Failed to load items. Please try again.");
+      }  
+    }  
+
+    // Load today's sales  
+    async function loadSales() {  
+      try {  
+        salesTableBody.innerHTML = "";  
+          
+        const q = query(  
+          salesRef,   
+          where("timestamp", ">=", todayStart),  
+          where("timestamp", "<=", todayEnd)  
+        );  
+          
+        const querySnapshot = await getDocs(q);  
+        let count = 0;  
+        let totalQuantity = 0;  
+        let totalValue = 0;  
+        let totalProfit = 0;  
+          
+        if (querySnapshot.empty) {  
+          salesTableBody.innerHTML = `  
+            <tr>  
+              <td colspan="8" class="no-data">No sales recorded today</td>  
+            </tr>  
+          `;  
+        } else {  
+          querySnapshot.forEach((docSnap) => {  
+            count++;  
+            const sale = docSnap.data();  
+            totalQuantity += parseFloat(sale.quantity);  
+            totalValue += parseFloat(sale.total);  
+            totalProfit += parseFloat(sale.profit);  
+              
+            const profitClass = sale.profit >= 0 ? "profit-text" : "loss-text";  
+            const profitDisplay = sale.profit >= 0 ? `+${sale.profit.toFixed(2)}` : sale.profit.toFixed(2);  
+              
+            const row = document.createElement("tr");  
+            row.innerHTML = `  
+              <td>${count}</td>  
+              <td>${sale.name}</td>  
+              <td>${sale.quantity}</td>  
+              <td>${sale.costPrice} ETB</td>  
+              <td>${sale.price} ETB</td>  
+              <td>${sale.total} ETB</td>  
+              <td class="${profitClass}">${profitDisplay} ETB</td>  
+              <td>  
+                <button class="btn-delete" data-id="${docSnap.id}">  
+                  <i class="fas fa-trash"></i>  
+                </button>  
+              </td>  
+            `;  
+            salesTableBody.appendChild(row);  
+          });  
+        }  
+          
+        totalItemsEl.textContent = count;  
+        totalQuantityEl.textContent = totalQuantity.toFixed(2);  
+        totalValueEl.textContent = totalValue.toFixed(2) + " ETB";  
+        totalProfitEl.textContent = (totalProfit >= 0 ? "+" : "") + totalProfit.toFixed(2) + " ETB";  
+          
+        if (totalProfit > 0) {  
+          profitCard.classList.add("profit");  
+          profitCard.classList.remove("loss");  
+        } else if (totalProfit < 0) {  
+          profitCard.classList.add("loss");  
+          profitCard.classList.remove("profit");  
+        } else {  
+          profitCard.classList.remove("profit", "loss");  
+        }  
+          
+      } catch (error) {  
+        console.error("Error loading sales:", error);  
+        salesTableBody.innerHTML = `  
+          <tr>  
+            <td colspan="8" class="no-data">Error loading sales data</td>  
+          </tr>  
+        `;  
+      }  
+    }  
+
+    // Add new sale  
+    form.addEventListener("submit", async (e) => {  
+      e.preventDefault();  
+        
+      const selectedOption = itemSelect.options[itemSelect.selectedIndex];  
+      const name = selectedOption.dataset.name;  
+      const costPrice = parseFloat(selectedOption.dataset.costPrice);  
+      const quantity = parseFloat(itemQuantityInput.value);  
+      const price = parseFloat(itemPriceInput.value);  
+        
+      if (!name || isNaN(quantity) || isNaN(price) || isNaN(costPrice)) {  
+        alert("Please fill in all fields with valid values");  
+        return;  
+      }  
+        
+      const total = quantity * price;  
+      const profit = (price - costPrice) * quantity;  
+        
+      try {  
+        await addDoc(salesRef, {  
+          name,  
+          quantity,  
+          costPrice,  
+          price,  
+          total,  
+          profit,  
+          timestamp: new Date()  
+        });  
+          
+        form.reset();  
+        displayItemName.textContent = "-";  
+        displayCostPrice.textContent = "-";  
+        displaySellingPrice.textContent = "-";  
+        itemSelect.focus();  
+        loadSales();  
+      } catch (error) {  
+        console.error("Error adding sale:", error);  
+        alert("Failed to add sale. Please try again.");  
+      }  
+    });  
+
+    // Delete single sale  
+    salesTableBody.addEventListener("click", async (e) => {  
+      if (e.target.closest(".btn-delete")) {  
+        const id = e.target.closest(".btn-delete").dataset.id;  
+          
+        if (confirm("Are you sure you want to delete this sale?")) {  
+          try {  
+            await deleteDoc(doc(db, "sales", id));  
+            loadSales();  
+          } catch (error) {  
+            console.error("Error deleting sale:", error);  
+            alert("Failed to delete sale. Please try again.");  
+          }  
+        }  
+      }  
+    });  
+
+    // Clear all today's sales  
+    clearSalesBtn.addEventListener("click", () => {  
+      confirmModal.style.display = "flex";  
+    });  
+      
+    confirmCancel.addEventListener("click", () => {  
+      confirmModal.style.display = "none";  
+    });  
+      
+    confirmDelete.addEventListener("click", async () => {  
+      confirmModal.style.display = "none";  
+        
+      try {  
+        const q = query(  
+          salesRef,   
+          where("timestamp", ">=", todayStart),  
+          where("timestamp", "<=", todayEnd)  
+        );  
+          
+        const querySnapshot = await getDocs(q);  
+        const deletePromises = [];  
+          
+        querySnapshot.forEach((docSnap) => {  
+          deletePromises.push(deleteDoc(doc(db, "sales", docSnap.id)));  
+        });  
+          
+        await Promise.all(deletePromises);  
+        loadSales();  
+          
+      } catch (error) {  
+        console.error("Error clearing sales:", error);  
+        alert("Failed to clear sales. Please try again.");  
+      }  
+    });  
+
+    // Generate PDF report  
+    generateReportBtn.addEventListener("click", async () => {  
+      try {  
+        const { jsPDF } = window.jspdf;  
+        const doc = new jsPDF();  
+          
+        const q = query(  
+          salesRef,   
+          where("timestamp", ">=", todayStart),  
+          where("timestamp", "<=", todayEnd)  
+        );  
+          
+        const querySnapshot = await getDocs(q);  
+          
+        if (querySnapshot.empty) {  
+          alert("No sales data to generate report");  
+          return;  
+        }  
+          
+        const reportData = [];  
+        let totalQuantity = 0;  
+        let totalValue = 0;  
+        let totalProfit = 0;  
+          
+        querySnapshot.forEach((docSnap, index) => {  
+          const sale = docSnap.data();  
+          totalQuantity += parseFloat(sale.quantity);  
+          totalValue += parseFloat(sale.total);  
+          totalProfit += parseFloat(sale.profit);  
+            
+          reportData.push([  
+            index + 1,  
+            sale.name,  
+            sale.quantity,  
+            `${sale.costPrice} ETB`,  
+            `${sale.price} ETB`,  
+            `${sale.total} ETB`,  
+            `${sale.profit >= 0 ? '+' : ''}${sale.profit.toFixed(2)} ETB`  
+          ]);  
+        });  
+          
+        doc.setFontSize(18);  
+        doc.setTextColor(67, 97, 238);  
+        doc.text(" Daily Sales Report", 105, 20, { align: "center" });  
+          
+        doc.setFontSize(12);  
+        doc.setTextColor(100, 100, 100);  
+        doc.text(today.toLocaleDateString(), 105, 30, { align: "center" });  
+          
+        doc.autoTable({  
+          head: [["#", "Item", "Qty", "Cost Price", "Sell Price", "Total", "Profit"]],  
+          body: reportData,  
+          startY: 40,  
+          theme: "grid",  
+          headStyles: {  
+            fillColor: [67, 97, 238],  
+            textColor: 255,  
+            fontStyle: "bold"  
+          },  
+          styles: {  
+            fontSize: 10,  
+            cellPadding: 5  
+          },  
+          columnStyles: {  
+            6: { cellWidth: 'auto', halign: 'right' }  
+          },  
+          didDrawCell: (data) => {  
+            if (data.column.index === 6 && data.cell.raw.includes('+')) {  
+              data.doc.setTextColor(46, 204, 113);  
+            } else if (data.column.index === 6 && parseFloat(data.cell.raw) < 0) {  
+              data.doc.setTextColor(231, 76, 60);  
+            }  
+          }  
+        });  
+          
+        const finalY = doc.lastAutoTable.finalY + 15;  
+        doc.setFontSize(14);  
+        doc.setTextColor(67, 97, 238);  
+        doc.text("Summary", 14, finalY);  
+          
+        doc.setFontSize(12);  
+        doc.text(`Total Items: ${querySnapshot.size}`, 14, finalY + 10);  
+        doc.text(`Total Quantity: ${totalQuantity.toFixed(2)}`, 14, finalY + 20);  
+        doc.text(`Total Sales: ${totalValue.toFixed(2)} ETB`, 14, finalY + 30);  
+          
+        if (totalProfit >= 0) {  
+          doc.setTextColor(46, 204, 113);  
+        } else {  
+          doc.setTextColor(231, 76, 60);  
+        }  
+        doc.text(`Total Profit: ${totalProfit >= 0 ? '+' : ''}${totalProfit.toFixed(2)} ETB`, 14, finalY + 40);  
+          
+        doc.save(`Daily_Report_${today.toISOString().slice(0, 10)}.pdf`);  
+          
+      } catch (error) {  
+        console.error("Error generating report:", error);  
+        alert("Failed to generate report. Please try again.");  
+      }  
+    });  
+
+    // Logout function  
+    logoutBtn.addEventListener("click", async () => {  
+      try {  
+        await signOut(auth);  
+        window.location.href = "index.html";  
+      } catch (error) {  
+        console.error("Error signing out:", error);  
+        alert("Failed to logout. Please try again.");  
+      }  
+    });  
+
+    // Initialize  
+    loadItems();  
+    loadSales();  
+  </script>  
+  <!-- Firebase Auth Check -->  
+  <script type="module" src="check-dash.js"></script>  
+</body>  
+</html>
